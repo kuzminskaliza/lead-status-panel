@@ -13,11 +13,4 @@ build b:
 # Видалити volumes
 volumes v:
 	docker compose down -v
-# Запустити проект
-init:
-	git clone https://github.com/kuzminskaliza/codeigniter3
-	cd codeigniter3 && \
-	docker compose up --build -d && \
-	sleep 10 && \
-	docker exec php-cli-codeigniter3 composer install && \
-	docker exec php-cli-codeigniter3 php index.php migrate/up
+
