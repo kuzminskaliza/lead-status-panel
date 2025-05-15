@@ -1,1 +1,3 @@
 .idea/
+/src/config/main-local.php
+/vendor/
