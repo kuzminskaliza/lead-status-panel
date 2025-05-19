@@ -5,56 +5,42 @@ namespace App\controller;
 use App\components\BelmarProApiService;
 use App\form\AddLeadForm;
 use App\view\ViewRender;
+use Exception;
 
 class AddLeadController
 {
-    private array $config;
     private ViewRender $viewRender;
+    private BelmarProApiService $apiService;
 
-    public function __construct(array $config)
+    public function __construct()
     {
-        $this->config = $config;
         $this->viewRender = new ViewRender();
+        $this->apiService = new BelmarProApiService();
     }
 
     public function run(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handlerFormSubmit();
-        } else {
-            $this->renderForm();
-        }
-    }
-
-    private function handlerFormSubmit(): void
-    {
         $form = new AddLeadForm();
-        $form->load($_POST);
-
-        $response = [];
-        $success = false;
-
-        if ($form->validate()) {
-            $baseUrl = $this->config['params']['baseUrl'] ?? '';
-            $token = $this->config['params']['token'] ?? '';
-
-            $apiService = new BelmarProApiService($baseUrl, $token);
-            $response = $apiService->addLead($form->getData());
-            $success = true;
+        $error = '';
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $form->load($_POST);
+                if ($form->validate()) {
+                    $response = $this->apiService->addLead($form->getData());
+                    if (!empty($response)) {
+                        header("Location: /statuses.php");
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $error = $e->getMessage();
         }
-        echo $this->viewRender->renderTemplate(__DIR__ . '/../view/template/add-lead.php', [
-            'success' => $success,
-            'response' => $response,
-            'vendor_url' => $this->config['params']['vendor_url'] ?? '',
-        ]);
-    }
 
-    private function renderForm(): void
-    {
-        echo $this->viewRender->renderTemplate(__DIR__ . '/../view/template/add-lead.php', [
-            'success' => false,
-            'response' => [],
-            'vendor_url' => $this->config['params']['vendor_url'] ?? '',
-        ]);
+        echo $this->viewRender->renderTemplate(
+            'add-lead',
+            ['form' => $form,
+                'error' => $error,
+            ]
+        );
     }
 }

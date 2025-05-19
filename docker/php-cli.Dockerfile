@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y \
 RUN ln -sf /usr/local/bin/php /usr/bin/php && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --version=2.6.6 --filename=composer
 
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
+RUN pecl channel-update pecl.php.net && pecl install xdebug && docker-php-ext-enable xdebug
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000

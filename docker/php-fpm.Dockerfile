@@ -1,6 +1,5 @@
-FROM php:8.3-fpm
+FROM php:8.2-fpm
 
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
+RUN pecl channel-update pecl.php.net && pecl install xdebug && docker-php-ext-enable xdebug
 
 WORKDIR /var/www/lead-status-panel
