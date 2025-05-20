@@ -1,0 +1,13 @@
+{
+    "name": "root/lead-status-panel",
+    "type": "n",
+    "require": {
+        "almasaeed2010/adminlte": "^3.2",
+      "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
